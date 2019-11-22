@@ -2,10 +2,17 @@ package fracCalc;
 
 import java.util.*;
 
+/**
+ * @author yadavb
+ *
+ */
 public class FracCalc {
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		// TODO: Read the input from the user and call produceAnswer with an equation
+		// Read the input from the user and call produceAnswer with an equation
 		Scanner scanner = new Scanner(System.in);
 
 		System.out.println(produceAnswer("1/2 * 23 - 4 + 5/2"));
@@ -79,6 +86,7 @@ public class FracCalc {
 		return firstOperand;
 	}
 
+	// Computes the equation with two operands and an operator
 	private static String computeFraction(String firstOperand, String operator, String secondOperand) {
 		String result = new String();
 
@@ -114,20 +122,11 @@ public class FracCalc {
 		return result;
 	}
 
-	private static String divideOperands(int firstWhole, int firstNumerator, int firstDenominator, int secondWhole,
-			int secondNumerator, int secondDenominator) {
-		int firstSign = firstWhole >= 0 ? 1 : -1;
-		int secondSign = secondWhole >= 0 ? 1 : -1;
-
-		firstNumerator += firstWhole * firstDenominator * firstSign;
-		secondNumerator += secondWhole * secondDenominator * secondSign;
-
-		int num = firstNumerator * secondDenominator * firstSign * secondSign;
-		int denom = firstDenominator * secondNumerator;
-		return reduce(num, denom);
-	}
-
-	private static String reduce(int num, int denom) {
+	// converts the given numerator and denominator into a mixed number with
+	// a whole number and a reduced proper fraction.
+	//
+	// The result is a properly reduced mixed number in whole_numerator/denominator format
+	private static String convertToMixedNumber(int num, int denom) {
 		String result = new String();
 		int whole = num / denom;
 		num %= denom;
@@ -165,6 +164,8 @@ public class FracCalc {
 		return result;
 	}
 
+	// finds the greatest common factor of given two numbers
+	// it uses the recursive algorithm for this.
 	private static int findGcf(int num, int denom) {
 		if (num == 0)
 			return denom;
@@ -172,24 +173,52 @@ public class FracCalc {
 		return findGcf(denom % num, num);
 	}
 
+	// divides two operands by first converting the proper fraction to improper.
+	// Then converts the improper fraction to proper/mixed number with a whole number
+	// if it exists and reduces the fraction.
+	//
+	// The result returned is a proper fraction
+	private static String divideOperands(int firstWhole, int firstNumerator, int firstDenominator, int secondWhole,
+			int secondNumerator, int secondDenominator) {
+		int firstSign = firstWhole >= 0 ? 1 : -1;
+		int secondSign = secondWhole >= 0 ? 1 : -1;
+
+		firstNumerator += firstWhole * firstDenominator * firstSign;
+		secondNumerator += secondWhole * secondDenominator * secondSign;
+
+		int num = firstNumerator * secondDenominator * firstSign * secondSign;
+		int denom = firstDenominator * secondNumerator;
+		return convertToMixedNumber(num, denom);
+	}
+
+	// multiplies two operands by first converting the proper fraction to improper.
+	// Then converts the improper fraction to proper/mixed number with a whole number
+	// if it exists and reduces the fraction.
+	//
+	// The result returned is a proper fraction
 	private static String multiplyOperands(int firstWhole, int firstNumerator, int firstDenominator, int secondWhole,
 			int secondNumerator, int secondDenominator) {
 		int firstSign = firstWhole >= 0 ? 1 : -1;
 		int secondSign = secondWhole >= 0 ? 1 : -1;
 
-		System.out.printf("whole1: %d, whole2: %d, num1: %d, num2: %d, denom1: %d, denom2: %d\n", firstWhole,
-				secondWhole, firstNumerator, secondNumerator, firstDenominator, secondDenominator);
+//		System.out.printf("whole1: %d, whole2: %d, num1: %d, num2: %d, denom1: %d, denom2: %d\n", firstWhole,
+//				secondWhole, firstNumerator, secondNumerator, firstDenominator, secondDenominator);
 
 		firstNumerator += firstWhole * firstDenominator * firstSign;
 		secondNumerator += secondWhole * secondDenominator * secondSign;
 
 		int num = firstNumerator * secondNumerator * firstSign * secondSign;
 		int denom = firstDenominator * secondDenominator;
-		System.out.printf("num: %d, denom: %d\n", num, denom);
+//		System.out.printf("num: %d, denom: %d\n", num, denom);
 
-		return reduce(num, denom);
+		return convertToMixedNumber(num, denom);
 	}
 
+	// subtracts two operands by first converting the proper fraction to improper
+	// and subtracting the second from first. Then converts the improper fraction 
+	// to proper/mixed number with a whole number if it exists and reduces the fraction.
+	//
+	// The result returned is a proper fraction
 	private static String subtractOperands(int firstWhole, int firstNumerator, int firstDenominator, int secondWhole,
 			int secondNumerator, int secondDenominator) {
 		int firstSign = firstWhole >= 0 ? 1 : -1;
@@ -201,9 +230,14 @@ public class FracCalc {
 		int num = firstNumerator * secondDenominator * firstSign - secondNumerator * firstDenominator * secondSign;
 		int denom = firstDenominator * secondDenominator;
 
-		return reduce(num, denom);
+		return convertToMixedNumber(num, denom);
 	}
 
+	// adds two operands by first converting the proper fraction to improper
+	// and adding them together. Then converts the improper fraction to proper/mixed number
+	// with a whole number if it exists and reduces the fraction.
+	//
+	// The result returned is a proper fraction
 	private static String addOperands(int firstWhole, int firstNumerator, int firstDenominator, int secondWhole,
 			int secondNumerator, int secondDenominator) {
 		int firstSign = firstWhole >= 0 ? 1 : -1;
@@ -215,9 +249,11 @@ public class FracCalc {
 		int num = firstNumerator * secondDenominator * firstSign + secondNumerator * firstDenominator * secondSign;
 		int denom = firstDenominator * secondDenominator;
 
-		return reduce(num, denom);
+		return convertToMixedNumber(num, denom);
 	}
 
+	// returns the denominator of the given operand,
+	// if there is no fraction part, then default value 1 is returned
 	private static int getDenominator(String operand) {
 		int denominator = 1;
 		int indexOfSlash = operand.indexOf('/');
@@ -228,7 +264,9 @@ public class FracCalc {
 
 		return denominator;
 	}
-
+ 
+	// returns the numerator of the fraction of the given operand
+	// if no fraction part exists, then 0 is returned
 	private static int getNumerator(String operand) {
 		int numerator = 0;
 		int indexOfSlash = operand.indexOf('/');
@@ -244,21 +282,20 @@ public class FracCalc {
 		return numerator;
 	}
 
+	// returns the whole number in the operand if one exist
+	// otherwise 0 is returned
 	private static int getWholeNumber(String operand) {
 		int wholeNumber = 0;
 		int indexOf_ = operand.indexOf('_');
 
 		if (indexOf_ != -1) {
 			wholeNumber = Integer.parseInt(operand.substring(0, indexOf_));
-		} else if (operand.indexOf('/') == -1) {
+		} else if (operand.indexOf('/') == -1 && !operand.isBlank()) {
 			// if no fraction part exists
 			wholeNumber = Integer.parseInt(operand);
 		}
 
 		return wholeNumber;
 	}
-
-	// TODO: Fill in the space below with any helper methods that you think you will
-	// need
 
 }
