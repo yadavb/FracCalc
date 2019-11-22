@@ -8,10 +8,24 @@ public class FracCalc {
 		// TODO: Read the input from the user and call produceAnswer with an equation
 		Scanner scanner = new Scanner(System.in);
 
-		// String request = scanner.nextLine();
-		System.out.println(produceAnswer("1/2 23 4 5/2 * - +"));
+		System.out.println(produceAnswer("1/2 * 23 - 4 + 5/2"));
 		System.out.println(produceAnswer("1/2 * 23"));
 
+		System.out.println("\n\nEnter a fraction to calculate or 'quit' to exit the program: ");
+		String request = scanner.nextLine().strip();
+		while (!request.equalsIgnoreCase("quit")) {
+			try {
+				System.out.println(produceAnswer(request));
+			}
+			catch (NumberFormatException e) {
+				System.out.print("Error: ");
+				System.out.print(e.getMessage());
+			}
+			
+			System.out.println("\n\nEnter a fraction to calculate or 'quit' to exit the program: ");
+			request = scanner.nextLine().strip();
+		}
+		
 		scanner.close();
 
 	}
@@ -29,6 +43,7 @@ public class FracCalc {
 	// e.g. return ==> "1_1/4"
 	public static String produceAnswer(String input) {
 
+		input = input.strip();
 		int firstSpaceIndex = input.indexOf(' ');
 		String firstOperand = input.substring(0, firstSpaceIndex);
 		System.out.printf("Input: %s\n", input);
@@ -57,7 +72,7 @@ public class FracCalc {
 			else {
 				input = "";
 			}
-			System.out.printf("%s %s %s\n", firstOperand, operator, secondOperand);
+			System.out.printf("%s %s %s %s\n", firstOperand, operator, secondOperand, input);
 			firstOperand = computeFraction(firstOperand, operator, secondOperand);
 		}
 		
